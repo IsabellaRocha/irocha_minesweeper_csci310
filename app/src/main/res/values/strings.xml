@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">GridLayout</string>
+    <string name="app_name">CSCI310</string>
     <string name="clock">\uD83D\uDD53</string>
     <string name="flag">\uD83D\uDEA9</string>
     <string name="mine">\uD83D\uDCA3</string>
     <string name="pick">\u26CF</string>
-    <string name="csci310">CSCI310</string>
+    <string name="play_again">Play Again</string>
 </resources>
