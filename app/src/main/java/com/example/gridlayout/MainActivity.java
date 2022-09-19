@@ -223,6 +223,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void revealBombs() {
+        for (int idx = 0; idx < cell_tvs.size(); idx++) {
+            if (cell_tvs.get(idx).getText().toString().equals("BOMBUNCLEARED")) {
+                cell_tvs.get(idx).setText("\uD83D\uDCA3");
+                cell_tvs.get(idx).setTextColor(Color.GRAY);
+                cell_tvs.get(idx).setBackgroundColor(Color.LTGRAY);
+            }
+        }
+    }
     public void onClickMode(View view) {
         String ogMode = mode;
         if (ogMode.equals("pick")) {
@@ -260,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(mode.equals("pick")) {
             if (tv.getText().toString().equals("BOMBUNCLEARED")){
-                tv.setText("\uD83D\uDCA3");
+                revealBombs();
                 lost = true;
             }
             else if (tv.getText().toString().contains("UNCLEARED")) {
