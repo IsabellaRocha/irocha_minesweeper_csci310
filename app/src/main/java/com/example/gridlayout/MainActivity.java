@@ -60,8 +60,7 @@ public class MainActivity extends AppCompatActivity {
             int rando = rand.nextInt(80);
             cell_tvs.get(rando).setText("BOMB");
         }
-
-
+        findNumberOfBombs();
     }
 
     private int findIndexOfCellTextView(TextView tv) {
@@ -72,40 +71,56 @@ public class MainActivity extends AppCompatActivity {
         return -1;
     }
 
-    private int findNumberOfBombs(TextView tv) {
-        int index = findIndexOfCellTextView(tv);
-        int numBombs = 0;
-        for (int indexToCheck = index - 9; indexToCheck < index - 6; indexToCheck++) {
-            if (indexToCheck < 0) {
-                break;
+    private void findNumberOfBombs() {
+        for(int index = 0; index < cell_tvs.size(); index++) {
+            int numBombs = 0;
+            boolean checkLeft = true;
+            boolean checkRight = true;
+            if (index % 8 == 0) checkLeft = false;
+            if (((index + 1) % 8) == 0) checkRight = false;
+
+            int indexToCheck = 0;
+            if (!checkLeft) indexToCheck = index - 8;
+            else indexToCheck = index - 9;
+            for (; indexToCheck < index - 6; indexToCheck++) {
+                if (indexToCheck < 0) {
+                    break;
+                }
+                if (cell_tvs.get(indexToCheck).getText().toString().equals("BOMB")) {
+                    numBombs += 1;
+                }
             }
-            if (cell_tvs.get(indexToCheck).getText().toString().equals("BOMB")) {
-                numBombs += 1;
+            if(checkLeft) {
+                if (cell_tvs.get(index - 1).getText().toString().equals("BOMB")) {
+                    System.out.println(String.valueOf(index) + " " + checkLeft);
+                    numBombs += 1;
+                }
+            }
+            if (checkRight) {
+                if (cell_tvs.get(index + 1).getText().toString().equals("BOMB")) {
+                    numBombs += 1;
+                }
+            }
+            indexToCheck = index + 7;
+            int bound = index + 10;
+            if (!checkRight) bound = index + 9;
+            for (; indexToCheck < bound; indexToCheck++) {
+                if (indexToCheck > 79) {
+                    break;
+                }
+                if (cell_tvs.get(indexToCheck).getText().toString().equals("BOMB")) {
+                    numBombs += 1;
+                }
+            }
+            if (!cell_tvs.get(index).getText().toString().equals("BOMB") && numBombs != 0) {
+                cell_tvs.get(index).setText(String.valueOf(numBombs));
             }
         }
-        if (index % 8 != 0 && cell_tvs.get(index - 1).getText().toString().equals("BOMB")) {
-            numBombs += 1;
-        }
-        if ((index + 1) % 8 != 0 && cell_tvs.get(index + 1).getText().toString().equals("BOMB")) {
-            numBombs += 1;
-        }
-        for (int indexToCheck = index + 7; indexToCheck < index + 10; indexToCheck++) {
-            if (indexToCheck > 70) {
-                break;
-            }
-            if (cell_tvs.get(indexToCheck).getText().toString().equals("BOMB")) {
-                numBombs += 1;
-            }
-        }
-        return numBombs;
+
     }
     public void onClickTV(View view){
         TextView tv = (TextView) view;
-        int n = findNumberOfBombs(tv);
-        if (!tv.getText().toString().equals("BOMB") && n != 0) {
-            tv.setText(String.valueOf(n));
-        }
-        else if (tv.getText().toString().equals("BOMB")){
+        if (tv.getText().toString().equals("BOMB")){
             tv.setText("\uD83D\uDCA3");
         }
         tv.setTextColor(Color.GRAY);
