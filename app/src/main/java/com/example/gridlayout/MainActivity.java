@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private String mode = "pick";
     private boolean won = false;
     private boolean lost = false;
+    private boolean running = true;
     private Button btn;
     private static final int COLUMN_COUNT = 8;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 String time = "\uD83D\uDD53  " + String.valueOf(clock);
                 String display = flagDisplay + time;
                 header.setText(display);
-                clock++;
+                if(running) clock++;
                 handler.postDelayed(this, 1000);
             }
         });
@@ -272,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
             if (tv.getText().toString().equals("BOMBUNCLEARED")){
                 revealBombs();
                 lost = true;
+                running = false;
             }
             else if (tv.getText().toString().contains("UNCLEARED")) {
                 revealCells(tv);
@@ -285,5 +287,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
         won = checkWin();
+        if(won) running = false;
     }
 }
