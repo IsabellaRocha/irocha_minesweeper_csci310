@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     private int clock = 0;
     private int totalFlags = 4;
     private String mode = "pick";
+    private boolean won = false;
+    private boolean lost = false;
     private static final int COLUMN_COUNT = 8;
 
     // save the TextViews of all cells in an array, so later on,
@@ -39,9 +41,8 @@ public class MainActivity extends AppCompatActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                int seconds = clock%60;
                 String flagDisplay = "\uD83D\uDEA9  " + String.valueOf(totalFlags) + "                 ";
-                String time = "\uD83D\uDD53  " + String.valueOf(seconds);
+                String time = "\uD83D\uDD53  " + String.valueOf(clock);
                 String display = flagDisplay + time;
                 header.setText(display);
                 clock++;
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void revealCells(TextView tv) {
         int index = findIndexOfCellTextView(tv);
-        if(!tv.getText().toString().equals("UNCLEARED")) {
+        if(!tv.getText().toString().equals("UNCLEARED") && !tv.getText().toString().equals("BOMBUNCLEARED")) {
             tv.setTextColor(Color.GRAY);
             tv.setBackgroundColor(Color.LTGRAY);
             tv.setText(tv.getText().toString().substring(0, 1));
@@ -238,14 +239,22 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onClickTV(View view){
         TextView tv = (TextView) view;
+        if(lost) {
+            Intent intent = new Intent(this, DisplayResult.class);
+            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + String.valueOf(clock) + " seconds.\n You lost.");
+            startActivity(intent);
+        }
+        if(won) {
+            Intent intent = new Intent(this, DisplayResult.class);
+            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + String.valueOf(clock) + " seconds.\n You won.\n Good job!");
+            startActivity(intent);
+        }
         if(mode.equals("pick")) {
-            if (tv.getText().toString().equals("BOMB")){
+            if (tv.getText().toString().equals("BOMBUNCLEARED")){
                 tv.setText("\uD83D\uDCA3");
-                Intent intent = new Intent(this, DisplayResult.class);
-                intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + String.valueOf(clock%60) + "seconds. You lost.");
-                startActivity(intent);
+                lost = true;
             }
-            revealCells(tv);
+            else revealCells(tv);
             tv.setTextColor(Color.GRAY);
             tv.setBackgroundColor(Color.LTGRAY);
         }
@@ -254,11 +263,6 @@ public class MainActivity extends AppCompatActivity {
             totalFlags -= 1;
 
         }
-        if(checkWin()) {
-            Intent intent = new Intent(this, DisplayResult.class);
-            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + String.valueOf(clock%60) + "seconds. You won. Good job!");
-            startActivity(intent);
-        }
-        checkWin();
+        won = checkWin();
     }
 }
