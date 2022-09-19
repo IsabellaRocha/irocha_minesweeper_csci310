@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.os.Handler;
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private String mode = "pick";
     private boolean won = false;
     private boolean lost = false;
+    private Button btn;
     private static final int COLUMN_COUNT = 8;
 
     // save the TextViews of all cells in an array, so later on,
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final TextView header = (TextView) findViewById(R.id.textView);
         final Handler handler = new Handler();
+        btn = (Button) findViewById(R.id.button);
 
         handler.post(new Runnable() {
             @Override
@@ -222,8 +225,14 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onClickMode(View view) {
         String ogMode = mode;
-        if (ogMode.equals("pick")) mode = "flag";
-        if (ogMode.equals("flag")) mode = "pick";
+        if (ogMode.equals("pick")) {
+            mode = "flag";
+            btn.setText("\uD83D\uDEA9");
+        }
+        if (ogMode.equals("flag")) {
+            mode = "pick";
+            btn.setText("\u26CF");
+        }
     }
 
     public boolean checkWin() {
@@ -254,9 +263,11 @@ public class MainActivity extends AppCompatActivity {
                 tv.setText("\uD83D\uDCA3");
                 lost = true;
             }
-            else revealCells(tv);
-            tv.setTextColor(Color.GRAY);
-            tv.setBackgroundColor(Color.LTGRAY);
+            else if (tv.getText().toString().contains("UNCLEARED")) {
+                revealCells(tv);
+                tv.setTextColor(Color.GRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+            }
         }
         if(mode.equals("flag")) {
             tv.setText("\uD83D\uDEA9");
