@@ -78,11 +78,13 @@ public class MainActivity extends AppCompatActivity {
             boolean checkRight = true;
             if (index % 8 == 0) checkLeft = false;
             if (((index + 1) % 8) == 0) checkRight = false;
-
+            System.out.println(String.valueOf(index) + " " + checkRight);
             int indexToCheck = 0;
             if (!checkLeft) indexToCheck = index - 8;
             else indexToCheck = index - 9;
-            for (; indexToCheck < index - 6; indexToCheck++) {
+            int bound = index - 6;
+            if (!checkRight) bound = index - 7;
+            for (; indexToCheck < bound; indexToCheck++) {
                 if (indexToCheck < 0) {
                     break;
                 }
@@ -92,17 +94,18 @@ public class MainActivity extends AppCompatActivity {
             }
             if(checkLeft) {
                 if (cell_tvs.get(index - 1).getText().toString().equals("BOMB")) {
-                    System.out.println(String.valueOf(index) + " " + checkLeft);
                     numBombs += 1;
                 }
             }
             if (checkRight) {
+
                 if (cell_tvs.get(index + 1).getText().toString().equals("BOMB")) {
                     numBombs += 1;
                 }
             }
-            indexToCheck = index + 7;
-            int bound = index + 10;
+            if (!checkLeft) indexToCheck = index + 8;
+            else indexToCheck = index + 7;
+            bound = index + 10;
             if (!checkRight) bound = index + 9;
             for (; indexToCheck < bound; indexToCheck++) {
                 if (indexToCheck > 79) {
@@ -115,11 +118,79 @@ public class MainActivity extends AppCompatActivity {
             if (!cell_tvs.get(index).getText().toString().equals("BOMB") && numBombs != 0) {
                 cell_tvs.get(index).setText(String.valueOf(numBombs));
             }
+            if (!cell_tvs.get(index).getText().toString().equals("BOMB") && numBombs == 0) {
+                cell_tvs.get(index).setText("");
+            }
         }
+    }
 
+    private void revealCells(TextView tv) {
+        int index = findIndexOfCellTextView(tv);
+        if (tv.getText().toString().equals("")) {
+            tv.setText(" ");
+            tv.setTextColor(Color.GRAY);
+            tv.setBackgroundColor(Color.LTGRAY);
+        }
+        boolean checkLeft = true;
+        boolean checkRight = true;
+        if (index % 8 == 0) checkLeft = false;
+        if (((index + 1) % 8) == 0) checkRight = false;
+
+        int indexToCheck = 0;
+        if (!checkLeft) indexToCheck = index - 8;
+        else indexToCheck = index - 9;
+        int bound = index - 6;
+        if (!checkRight) bound = index - 7;
+        for (; indexToCheck < bound; indexToCheck++) {
+            if (indexToCheck < 0) {
+                break;
+            }
+            if(!cell_tvs.get(indexToCheck).getText().toString().equals("BOMB") && !cell_tvs.get(indexToCheck).getText().toString().equals("") && !cell_tvs.get(indexToCheck).getText().toString().equals(" ")) {
+                cell_tvs.get(indexToCheck).setTextColor(Color.GRAY);
+                cell_tvs.get(indexToCheck).setBackgroundColor(Color.LTGRAY);
+            }
+            else if (cell_tvs.get(indexToCheck).getText().toString().equals("")) {
+                revealCells(cell_tvs.get(indexToCheck));
+            }
+        }
+        if(checkLeft) {
+            if(!cell_tvs.get(index - 1).getText().toString().equals("BOMB") && !cell_tvs.get(index - 1).getText().toString().equals("") && !cell_tvs.get(index - 1).getText().toString().equals(" ")) {
+                cell_tvs.get(index-1).setTextColor(Color.GRAY);
+                cell_tvs.get(index-1).setBackgroundColor(Color.LTGRAY);
+            }
+            else if (cell_tvs.get(index - 1).getText().toString().equals("")) {
+                revealCells(cell_tvs.get(index - 1));
+            }
+        }
+        if (checkRight) {
+            if(!cell_tvs.get(index + 1).getText().toString().equals("BOMB") && !cell_tvs.get(index + 1).getText().toString().equals("") && !cell_tvs.get(index + 1).getText().toString().equals(" ")) {
+                cell_tvs.get(index+1).setTextColor(Color.GRAY);
+                cell_tvs.get(index+1).setBackgroundColor(Color.LTGRAY);
+            }
+            else if (cell_tvs.get(index + 1).getText().toString().equals("")) {
+                revealCells(cell_tvs.get(index + 1));
+            }
+        }
+        if (!checkLeft) indexToCheck = index + 8;
+        else indexToCheck = index + 7;
+        bound = index + 10;
+        if (!checkRight) bound = index + 9;
+        for (; indexToCheck < bound; indexToCheck++) {
+            if (indexToCheck > 79) {
+                break;
+            }
+            if(!cell_tvs.get(indexToCheck).getText().toString().equals("BOMB") && !cell_tvs.get(indexToCheck).getText().toString().equals("") && !cell_tvs.get(indexToCheck).getText().toString().equals(" ")) {
+                cell_tvs.get(indexToCheck).setTextColor(Color.GRAY);
+                cell_tvs.get(indexToCheck).setBackgroundColor(Color.LTGRAY);
+            }
+            else if (cell_tvs.get(indexToCheck).getText().toString().equals("")) {
+                revealCells(cell_tvs.get(indexToCheck));
+            }
+        }
     }
     public void onClickTV(View view){
         TextView tv = (TextView) view;
+        revealCells(tv);
         if (tv.getText().toString().equals("BOMB")){
             tv.setText("\uD83D\uDCA3");
         }
