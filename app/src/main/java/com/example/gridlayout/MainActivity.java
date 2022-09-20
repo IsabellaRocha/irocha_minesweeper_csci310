@@ -81,8 +81,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         Random rand = new Random();
+        ArrayList<Integer> alreadyPlacedBombs = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             int rando = rand.nextInt(80);
+            while (alreadyPlacedBombs.contains(rando)) {
+                rando = rand.nextInt(80);
+            }
+            alreadyPlacedBombs.add(rando);
             cell_tvs.get(rando).setText("BOMBUNCLEARED");
         }
         findNumberOfBombs();
@@ -270,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) view;
         if(lost) {
             Intent intent = new Intent(this, DisplayResult.class);
-            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + clock + " seconds.\n You lost.");
+            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + clock + " seconds.\n You lost.\n Try again.");
             startActivity(intent);
         }
         if(won) {
@@ -279,20 +284,17 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         if(mode.equals("pick")) {
-            if (tv.getText().toString().contains("\uD83D\uDEA9")) {
-                tv.setText(ogText.get(tv));
-                tv.setTextColor(Color.GRAY);
-                tv.setBackgroundColor(Color.LTGRAY);
-            }
-            if (tv.getText().toString().equals("BOMBUNCLEARED")){
-                revealBombs();
-                lost = true;
-                running = false;
-            }
-            else if (tv.getText().toString().contains("UNCLEARED")) {
-                revealCells(tv);
-                tv.setTextColor(Color.GRAY);
-                tv.setBackgroundColor(Color.LTGRAY);
+            if (!tv.getText().toString().contains("\uD83D\uDEA9")) {
+                if (tv.getText().toString().equals("BOMBUNCLEARED")){
+                    revealBombs();
+                    lost = true;
+                    running = false;
+                }
+                else if (tv.getText().toString().contains("UNCLEARED")) {
+                    revealCells(tv);
+                    tv.setTextColor(Color.GRAY);
+                    tv.setBackgroundColor(Color.LTGRAY);
+                }
             }
         }
         if(mode.equals("flag")) {
