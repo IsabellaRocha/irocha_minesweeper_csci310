@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.os.Handler;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
     private ArrayList<TextView> cell_tvs;
+    private HashMap<TextView, String> ogText;
 
     private int dpToPixel(int dp) {
         float density = Resources.getSystem().getDisplayMetrics().density;
@@ -49,12 +53,13 @@ public class MainActivity extends AppCompatActivity {
                 String time = "\uD83D\uDD53  " + String.valueOf(clock);
                 String display = flagDisplay + time;
                 header.setText(display);
-                if(running) clock++;
+                if (running) clock++;
                 handler.postDelayed(this, 1000);
             }
         });
 
         cell_tvs = new ArrayList<TextView>();
+        ogText = new HashMap<TextView, String>();
         // Method (2): add four dynamically created cells
         GridLayout grid = (GridLayout) findViewById(R.id.gridLayout01);
         for (int i = 0; i<=9; i++) {
@@ -84,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
             cell_tvs.get(rando).setText("BOMBUNCLEARED");
         }
         findNumberOfBombs();
+        for(int idx = 0; idx < cell_tvs.size(); idx++) {
+            ogText.put(cell_tvs.get(idx), cell_tvs.get(idx).getText().toString());
+        }
     }
 
     private int findIndexOfCellTextView(TextView tv) {
@@ -282,11 +290,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if(mode.equals("flag")) {
-            tv.setText("\uD83D\uDEA9");
-            totalFlags -= 1;
-
+            if(tv.getText().toString().contains("\uD83D\uDEA9")) {
+                tv.setText(ogText.get(tv));
+                totalFlags += 1;
+            }
+            else {
+                tv.setText("\uD83D\uDEA9" + ogText.get(tv));
+                totalFlags -= 1;
+            }
         }
         won = checkWin();
-        if(won) running = false;
+        running = !won;
     }
 }
