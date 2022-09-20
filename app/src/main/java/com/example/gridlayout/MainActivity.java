@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void revealCells(TextView tv) {
         int index = findIndexOfCellTextView(tv);
+        if(tv.getText().toString().contains("\uD83D\uDEA9")) tv.setText(ogText.get(tv));
         if(!tv.getText().toString().equals("UNCLEARED") && !tv.getText().toString().equals("BOMBUNCLEARED")) {
             tv.setTextColor(Color.GRAY);
             tv.setBackgroundColor(Color.LTGRAY);
@@ -178,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
             if (indexToCheck < 0) {
                 break;
             }
+            if(cell_tvs.get(indexToCheck).getText().toString().contains("\uD83D\uDEA9"))  cell_tvs.get(indexToCheck).setText(ogText.get(cell_tvs.get(indexToCheck)));
             if(!cell_tvs.get(indexToCheck).getText().toString().equals("BOMBUNCLEARED") && !cell_tvs.get(indexToCheck).getText().toString().equals("") && !cell_tvs.get(indexToCheck).getText().toString().equals("UNCLEARED")) {
                 cell_tvs.get(indexToCheck).setTextColor(Color.GRAY);
                 cell_tvs.get(indexToCheck).setBackgroundColor(Color.LTGRAY);
@@ -189,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if(checkLeft) {
+            if(cell_tvs.get(index-1).getText().toString().contains("\uD83D\uDEA9"))  cell_tvs.get(index-1).setText(ogText.get(cell_tvs.get(index-1)));
             if(!cell_tvs.get(index - 1).getText().toString().equals("BOMBUNCLEARED") && !cell_tvs.get(index - 1).getText().toString().equals("") && !cell_tvs.get(index - 1).getText().toString().equals("UNCLEARED")) {
                 cell_tvs.get(index-1).setTextColor(Color.GRAY);
                 cell_tvs.get(index-1).setBackgroundColor(Color.LTGRAY);
@@ -200,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (checkRight) {
+            if(cell_tvs.get(index+1).getText().toString().contains("\uD83D\uDEA9"))  cell_tvs.get(index+1).setText(ogText.get(cell_tvs.get(index+1)));
             if(!cell_tvs.get(index + 1).getText().toString().equals("BOMBUNCLEARED") && !cell_tvs.get(index + 1).getText().toString().equals("") && !cell_tvs.get(index + 1).getText().toString().equals("UNCLEARED")) {
                 cell_tvs.get(index+1).setTextColor(Color.GRAY);
                 cell_tvs.get(index+1).setBackgroundColor(Color.LTGRAY);
@@ -218,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
             if (indexToCheck > 79) {
                 break;
             }
+            if(cell_tvs.get(indexToCheck).getText().toString().contains("\uD83D\uDEA9"))  cell_tvs.get(indexToCheck).setText(ogText.get(cell_tvs.get(indexToCheck)));
             if(!cell_tvs.get(indexToCheck).getText().toString().equals("BOMBUNCLEARED") && !cell_tvs.get(indexToCheck).getText().toString().equals("") && !cell_tvs.get(indexToCheck).getText().toString().equals("UNCLEARED")) {
                 cell_tvs.get(indexToCheck).setTextColor(Color.GRAY);
                 cell_tvs.get(indexToCheck).setBackgroundColor(Color.LTGRAY);
