@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.os.Handler;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -26,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean lost = false;
     private boolean running = true;
     private Button btn;
-    private static final int COLUMN_COUNT = 8;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
@@ -42,15 +39,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final TextView header = (TextView) findViewById(R.id.textView);
+        final TextView header = findViewById(R.id.textView);
         final Handler handler = new Handler();
-        btn = (Button) findViewById(R.id.button);
+        btn = findViewById(R.id.button);
 
         handler.post(new Runnable() {
             @Override
             public void run() {
-                String flagDisplay = "\uD83D\uDEA9  " + String.valueOf(totalFlags) + "                 ";
-                String time = "\uD83D\uDD53  " + String.valueOf(clock);
+                String flagDisplay = "\uD83D\uDEA9  " + totalFlags + "                 ";
+                String time = "\uD83D\uDD53  " + clock;
                 String display = flagDisplay + time;
                 header.setText(display);
                 if (running) clock++;
@@ -58,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        cell_tvs = new ArrayList<TextView>();
-        ogText = new HashMap<TextView, String>();
+        cell_tvs = new ArrayList<>();
+        ogText = new HashMap<>();
         // Method (2): add four dynamically created cells
-        GridLayout grid = (GridLayout) findViewById(R.id.gridLayout01);
+        GridLayout grid = findViewById(R.id.gridLayout01);
         for (int i = 0; i<=9; i++) {
             for (int j=0; j<=7; j++) {
                 TextView tv = new TextView(this);
@@ -109,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             boolean checkRight = true;
             if (index % 8 == 0) checkLeft = false;
             if (((index + 1) % 8) == 0) checkRight = false;
-            int indexToCheck = 0;
+            int indexToCheck;
             if (!checkLeft) indexToCheck = index - 8;
             else indexToCheck = index - 9;
             int bound = index - 6;
@@ -146,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (!cell_tvs.get(index).getText().toString().equals("BOMBUNCLEARED") && numBombs != 0) {
-                cell_tvs.get(index).setText(String.valueOf(numBombs) + "UNCLEARED");
+                cell_tvs.get(index).setText(numBombs + "UNCLEARED");
             }
             if (!cell_tvs.get(index).getText().toString().equals("BOMBUNCLEARED") && numBombs == 0) {
                 cell_tvs.get(index).setText("UNCLEARED");
@@ -172,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         if (index % 8 == 0) checkLeft = false;
         if (((index + 1) % 8) == 0) checkRight = false;
 
-        int indexToCheck = 0;
+        int indexToCheck;
         if (!checkLeft) indexToCheck = index - 8;
         else indexToCheck = index - 9;
         int bound = index - 6;
@@ -235,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void revealBombs() {
         for (int idx = 0; idx < cell_tvs.size(); idx++) {
-            if (cell_tvs.get(idx).getText().toString().equals("BOMBUNCLEARED")) {
+            if (cell_tvs.get(idx).getText().toString().contains("BOMBUNCLEARED")) {
                 cell_tvs.get(idx).setText("\uD83D\uDCA3");
                 cell_tvs.get(idx).setTextColor(Color.GRAY);
                 cell_tvs.get(idx).setBackgroundColor(Color.LTGRAY);
@@ -256,12 +253,11 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean checkWin() {
         for(int idx = 0; idx < cell_tvs.size(); idx++) {
-            System.out.println(String.valueOf(idx) + " " + cell_tvs.get(idx).getText().toString());
             if(cell_tvs.get(idx).getText().toString().contains("UNCLEARED")) {
                 if(!cell_tvs.get(idx).getText().toString().contains("BOMB")) {
                     return false;
                 }
-            };
+            }
         }
         return true;
     }
@@ -269,15 +265,20 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) view;
         if(lost) {
             Intent intent = new Intent(this, DisplayResult.class);
-            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + String.valueOf(clock) + " seconds.\n You lost.");
+            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + clock + " seconds.\n You lost.");
             startActivity(intent);
         }
         if(won) {
             Intent intent = new Intent(this, DisplayResult.class);
-            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + String.valueOf(clock) + " seconds.\n You won.\n Good job!");
+            intent.putExtra("com.example.gridlayout.MESSAGE", "Used " + clock + " seconds.\n You won.\n Good job!");
             startActivity(intent);
         }
         if(mode.equals("pick")) {
+            if (tv.getText().toString().contains("\uD83D\uDEA9")) {
+                tv.setText(ogText.get(tv));
+                tv.setTextColor(Color.GRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+            }
             if (tv.getText().toString().equals("BOMBUNCLEARED")){
                 revealBombs();
                 lost = true;
@@ -300,6 +301,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         won = checkWin();
-        running = !won;
+        if (won) running = false;
     }
 }
